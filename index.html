@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tebak Bendera - Game Edukasi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">🌍</div>
+                <div class="logo-text">
+                    <h1>TEBAK BENDERA</h1>
+                    <p class="subtitle">Tebak nama negara dari bendera yang ditampilkan</p>
+                </div>
+            </div>
+            <div class="stats-header">
+                <div class="stat-badge">
+                    <span class="stat-label">SCORE</span>
+                    <span class="stat-value" id="score">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Game Area -->
+        <div class="game-area">
+            <!-- Flag Section -->
+            <div class="section flag-section">
+                <div class="section-label">BENDERA</div>
+                <div class="flag-container">
+                    <div class="flag-box" id="flag-box">
+                        <div class="loading" id="loading">
+                            <div class="loading-dots">
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                            </div>
+                            <p>Memuat bendera...</p>
+                        </div>
+                        <img id="flag-image" src="" alt="Bendera negara" class="flag-image">
+                    </div>
+                    <div class="flag-info">
+                        <div class="difficulty" id="difficulty">⚪ Mudah</div>
+                        <div class="hint" id="hint">🔍 Tebak nama negaranya</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Section -->
+            <div class="section input-section">
+                <div class="section-label">JAWABAN</div>
+                <div class="input-box">
+                    <input type="text" id="answer-input" placeholder="Ketik nama negara di sini..." maxlength="30" autocomplete="off" spellcheck="false">
+                    <div class="input-info">
+                        <span class="char-count" id="char-count">0/30</span>
+                        <button class="btn-clear" id="clear-btn" title="Hapus">✕</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result Section -->
+            <div class="section result-section">
+                <div class="section-label">HASIL</div>
+                <div class="result-box" id="result-box">
+                    <div class="result-header">
+                        <div class="result-icon" id="result-icon">⚫</div>
+                        <div class="result-content">
+                            <div class="result-title" id="result-title">Tunggu jawaban</div>
+                            <div class="result-message" id="result-message">Submit jawaban untuk melihat hasil</div>
+                        </div>
+                    </div>
+                    <div class="country-info" id="country-info">
+                        <!-- Informasi negara akan muncul di sini -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="section stats-section">
+                <div class="section-label">STATISTIK</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-label">BENAR</div>
+                        <div class="stat-card-value" id="correct-count">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-label">SALAH</div>
+                        <div class="stat-card-value" id="wrong-count">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-label">AKURASI</div>
+                        <div class="stat-card-value" id="accuracy">0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-label">RATA-RATA</div>
+                        <div class="stat-card-value" id="average-score">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="btn btn-secondary" id="hint-btn" onclick="showHint()">
+                <span class="btn-icon">💡</span>
+                <span class="btn-text">PETUNJUK</span>
+            </button>
+            <button class="btn btn-primary" id="submit-btn" onclick="submitAnswer()" disabled>
+                <span class="btn-icon">✓</span>
+                <span class="btn-text">SUBMIT JAWABAN</span>
+            </button>
+            <button class="btn btn-secondary" id="new-btn" onclick="getNewFlag()">
+                <span class="btn-icon">🔄</span>
+                <span class="btn-text">BENDERA BARU</span>
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="hint-text">
+                <span class="hint-icon">🎯</span>
+                <span>Tekan <kbd>Enter</kbd> untuk submit | <kbd>Esc</kbd> untuk clear</span>
+            </div>
+            <div class="api-info">
+                <span class="api-status" id="api-status">API: Tebak Bendera</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification"></div>
+
+    <!-- Modal Hint -->
+    <div class="modal" id="hint-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>💡 PETUNJUK</h3>
+                <button class="modal-close" onclick="closeHintModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="hint-content" id="hint-content">
+                    <p>Isi petunjuk akan muncul di sini...</p>
+                </div>
+                <div class="hint-examples">
+                    <p><strong>Contoh format jawaban:</strong></p>
+                    <ul>
+                        <li>INDONESIA (huruf besar/kecil tidak berpengaruh)</li>
+                        <li>AMERIKA SERIKAT (negara dengan nama panjang)</li>
+                        <li>KOREA SELATAN (gunakan nama resmi)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
